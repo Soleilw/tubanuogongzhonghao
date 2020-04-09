@@ -78,7 +78,7 @@
 						code: 1
 					}, function(callback) {
 						if (callback.msg === 'ok') {
-							console.log(1111)
+							that.getAuditStudent()
 						}
 					})
 				}).catch(() => {
@@ -88,6 +88,7 @@
 					}, function(callback) {
 						if (callback.msg === 'ok') {
 							console.log(2222)
+							that.getAuditStudent()
 						}
 					})
 				})

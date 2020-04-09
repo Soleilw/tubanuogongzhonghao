@@ -165,7 +165,7 @@
 		created() {
 			$('title').text('用户信息')
 			// sessionStorage.setItem('openId', 'oaHn-0XiDsAX024l7mZKXJXnYczA')
-			sessionStorage.setItem('openId', 'oaHn-0Uz5B2GCTk2W4-1H3wXoItE')
+			// sessionStorage.setItem('openId', 'oaHn-0Uz5B2GCTk2W4-1H3wXoItE')
 			// sessionStorage.setItem('openId', 'oaHn-0aPSKuP9qmkRBFyS9Fxi_w8')
 			
 		},
