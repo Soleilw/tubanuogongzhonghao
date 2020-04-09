@@ -8,7 +8,7 @@
                     <div class="content" @click='toChildren_Details(item.stu_number)'>
                         <span>{{item.stu_name}}</span>
                         <span>学号：{{item.stu_number}}</span>
-                        <span v-if="item.class_grade">班级：{{item.class_grade}}年级{{item.class_name}}班</span>
+                        <span v-if="item.class">班级：{{item.class}}</span>
                         <span v-else>班级：暂无班级信息</span>
                     </div>
                 </div>

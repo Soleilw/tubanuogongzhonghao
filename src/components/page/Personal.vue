@@ -4,16 +4,15 @@
         <div class="content">
             <div class='headbox'>
                 <div class='redbox'>
-					<!-- <img src="../../assets/icon/my.png" alt=""> -->
-                    <img :src="userInfor.user_image ? userInfor.user_image : def_image" class='headimg' />
-                    <span class="nickname">{{userInfor.user_alias ? userInfor.user_alias : '未注册'}}</span>
+                    <img :src="userInfor.user_image" class='headimg' />
+                    <span class="nickname">{{userInfor.user_alias}}</span>
                 </div>
             </div>
 
             <div>
                 <van-cell title="个人信息" icon="contact" to="userInfo" is-link />
                 <van-cell title="我的孩子" icon="records" to="childrenList" is-link />
-				<div v-if="whether">
+				<div v-if="userInfor.apply_whether === 1">
 				    <van-cell title="班级管理" icon="friends-o" to="studentAudit" is-link />
 				</div>
                 <!-- <van-cell title="邀请访客" icon="sign" @click="invite" is-link /> -->
@@ -28,40 +27,33 @@
         data() {
             return {
                 userInfor: {} ,//用户信息
-				def_image: require('../../assets/icon/my.png'),
 				whether: false
             }
         },
         created() {
             $('title').text('个人中心')
-            let code = API.getUrlParam("code"); //获取url参数
-            this.userInfor = API.data.userInfor.user; //用户信息
-			this.isWhether(); // 是否开启班级功能
+            // let code = API.getUrlParam("code"); //获取url参数
+            // this.userInfor = API.data.userInfor.user; //用户信息
+			
         },
         mounted() {
-            this.getUser();
+            this.getPersonal();
         },
 
         methods: {
             // 获取个人信息
-            getUser() {
+            getPersonal() {
                 let that = this;
                 // sessionStorage.getItem('openId')
                 API.getUser({
                     user_openid: sessionStorage.getItem('openId')
                 }, function(callback) {
-                    if (callback) {
-                        sessionStorage.setItem("userInfor", JSON.stringify(callback));
-                        API.data.userInfor = callback;
+                    if (callback.msg == 'ok') {
+                       that.userInfor = callback.user;
                     }
                 })
             },
-			isWhether() {
-			    var that = this;
-			    if (API.data.userInfor.user.whether === 1) {
-			        that.whether = true;
-			    }
-			}
+
         }
     }
 </script>

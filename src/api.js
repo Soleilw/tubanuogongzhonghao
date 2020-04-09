@@ -88,7 +88,7 @@ export const getUser = function(data,callback){$.ajax({ type:'get', url:realmA_B
 export const postAddUser = function(data,callback){$.ajax({ type:'post', url:realmA_B+"/insert_user", data:data, headers:headersE, success:function(res){callback(res)}})}
 
 // 老师信息注册
-export const postAddTeacher = function(data,callback){$.ajax({ type:'post', url:realmA_B+"/insert_user", data:data, headers:headersE, success:function(res){callback(res)}})}
+// export const postAddTeacher = function(data,callback){$.ajax({ type:'post', url:realmA_B+"/insert_user", data:data, headers:headersE, success:function(res){callback(res)}})}
 
 // 修改信息
 export const putUser = function(data,callback){$.ajax({ type:'post', url:realmA_B+"/user/updateUser", data:data, headers:headersB, success:function(res){callback(res)}})}

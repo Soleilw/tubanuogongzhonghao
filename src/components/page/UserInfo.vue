@@ -1,127 +1,107 @@
 <template>
 	<div>
-		<!-- <van-nav-bar title="用户信息" fixed/> -->
 		<div class="content">
 			<van-form @submit="onSubmit">
-				<div class="van-cell van-cell--required van-field" v-if="!userInfor.user_image">
-					<!-- van-cell--required ：小红点 -->
+				<div class="van-cell van-field" v-if="userInfor.user_image">
 					<div class="van-cell__title van-field__label">
 						<span>头像</span>
 					</div>
 					<div class="van-cell__value van-field__value">
-						<!-- van-field__control--right ：右对齐 -->
 						<div class="van-field__body">
-							<div class="van-field__control van-field__control--right">
-								<img style="width: 30vw; height: 24vw;" :src="userInfor.user_image" alt="">
+							<div class="van-field__control van-field__control--right" >
+								<img style="width: 26vw; height: 24vw;border-radius: 2vw;" :src="userInfor.user_image" alt="">
 							</div>
 						</div>
 					</div>
 				</div>
-				<div class="van-cell van-cell--required van-field" v-else>
-					<!-- van-cell--required ：小红点 -->
-					<div class="van-cell__title van-field__label">
-						<span>头像</span>
-					</div>
-					<div class="van-cell__value van-field__value">
-						<!-- van-field__control--right ：右对齐 -->
-						<div class="van-field__body">
-							<div class="van-field__control van-field__control--right">
-								<img style="width: 30vw; height: 24vw;" :src="userInfor.user_image" alt="">
-							</div>
-						</div>
-					</div>
-				</div>
+				<!-- 姓名 -->
+				<van-field v-model="userInfor.user_name" type="text" label="姓名" placeholder="请填写姓名" input-align="right" required />
 
-				<van-field v-model="userInfor.user_name" type="text" label="姓名" placeholder="请填写姓名" input-align="right" required
-				 :readonly="accountInfor.ifStatus == 0" />
+				<!-- 性别 -->
+				<van-field :value="sexList[userInfor.user_sex - 1]" type="text" label="性别" placeholder="点击选择" @click="showPicker1 = true"
+				 input-align="right" required />
 
-				<van-field readonly clickable :value="sexList[userInfor.user_sex - 1]" label="性别" placeholder="点击选择" input-align="right"
-				 @click="showPicker4 = true" required />
+				<!-- 证件号 -->
+				<van-field v-model="userInfor.user_card" type="text" label="证件号" placeholder="请填写证件号" input-align="right" required />
 
-				<van-field v-model="userInfor.user_card" type="text" label="证件号" placeholder="请填写身份证号/护照号" input-align="right"
-				 required :readonly="accountInfor.ifStatus == 0" />
+				<!-- 手机号 -->
+				<van-field v-model="userInfor.user_iphone" type="text" label="手机号" placeholder="请填写手机号" input-align="right"
+				 required />
 
-				<van-field v-model="userInfor.user_iphone" type="tel" label="手机号" placeholder="请填写手机号" input-align="right" required
-				 :readonly="accountInfor.ifStatus == 0" />
-
+				<!-- 地址 -->
 				<van-field v-model="userInfor.user_address" type="textarea" label="地址" placeholder="请填写地址" input-align="right"
-				 autosize show-word-limit maxlength="50" required :readonly="accountInfor.ifStatus == 0" />
+				 autosize show-word-limit maxlength="50" required />
 
-				<!-- 是否本校职工 -->
+				<!-- 是否为职工 -->
 				<van-cell center title="是否本校职工" required>
-					<van-switch v-model="worker" size="20" @click="switch1" />
+					<van-switch v-model="worker" size="20" @change="switch1" :disabled="disabled1" />
 				</van-cell>
+
 				<div v-if="worker">
-					<van-field v-model="userInfor.date1" type="text" label="部门" placeholder="请填写部门" input-align="right" required
-					 :readonly="accountInfor.ifStatus == 0" />
-					<van-field v-model="userInfor.positions" type="text" label="职位" placeholder="请填写职位" input-align="right" required
-					 :readonly="accountInfor.ifStatus == 0" />
+					<!-- 部门 -->
+					<van-field v-model="workerInfor.date1" type="text" label="部门" placeholder="请填写部门" input-align="right" required />
+					<!-- 职位 -->
+					<van-field v-model="workerInfor.positions" type="text" label="职位" placeholder="请填写职位" input-align="right" required />
+				</div>
+
+				<!-- 是否为教师 -->
+				<van-cell center title="是否本校教师" required>
+					<van-switch v-model="swi_teacher" size="20" @change="switch2" :disabled="disabled2" />
+				</van-cell>
+
+				<div v-if="swi_teacher">
+					<!-- 是否为班主任 -->
+					<van-cell center title="是否是班主任" required>
+						<van-switch v-model="charge" size="20" :disabled="disabled3" />
+					</van-cell>
+
+					<!-- 工号 -->
+					<van-field v-model="teacherInfor.work_number" type="text" label="工号" placeholder="请填写工号" input-align="right"
+					 required />
+
+					<!-- 年级 -->
+					<van-field readonly clickable label="年级" :value="userInfor.class_grade" placeholder="请选择年级" input-align="right"
+					 @click="showPicker2 = true" required />
+
+					<!-- 班级 -->
+					<van-field readonly clickable label="班级" :value="userInfor.class_name" placeholder="请选择班级" input-align="right"
+					 @click="showPicker3 = true" required />
+
+					<!-- 学科 -->
+					<van-field v-model="teacherInfor.subjects" type="text" label="学科" placeholder="请填写学科" input-align="right" required />
+				</div>
+				<!-- 人脸 -->
+				<div v-if="worker === true || swi_teacher === true">
 					<van-cell required title="人脸数据(点击图片更换)">
 						<div class="van-cell__value van-field__value">
 							<div class="van-field__body">
 								<div class="van-field__control van-field__control--right">
 									<van-uploader v-model="fileList" preview-size="100px" :after-read="afterRead" :max-count="1" :delete="deleteFile"
-									 :deletable="!disabled" />
+									 :deletable="deletable" />
 								</div>
 							</div>
 						</div>
 					</van-cell>
 				</div>
-
-				<!-- 是否本校教师 -->
-				<van-cell center title="是否本校教师" required>
-					<van-switch v-model="switchteacher" size="20" @click="switch2" />
-				</van-cell>
-				<div v-if="switchteacher">
-					<van-cell center title="是否是班主任" required>
-						<van-switch v-model="userInfor.whether" size="20" />
-					</van-cell>
-
-					<van-field v-model="userInfor.work_number" type="text" label="工号" placeholder="请填写工号" input-align="right" required
-					 :readonly="accountInfor.ifStatus == 0" />
-
-					<!-- 年级 -->
-					<van-field readonly clickable label="年级班级" :value="userInfor.class_grade" placeholder="请选择年级班级" input-align="right"
-					 @click="showPicker6 = true" required />
-
-					<!-- 班级 -->
-					<van-field readonly clickable label="班级" :value="userInfor.class_name"  placeholder="请选择班级" input-align="right"
-					 @click="showPicker7 = true" required />
-	
-
-					<van-field v-model="userInfor.subjects" type="text" label="学科" placeholder="请填写学科" input-align="right" required
-					 :readonly="accountInfor.ifStatus == 0" />
-
-					<van-cell required title="人脸数据(点击图片更换)">
-						<div class="van-cell__value van-field__value">
-							<div class="van-field__body">
-								<div class="van-field__control van-field__control--right">
-									<van-uploader v-model="fileList" preview-size="150px" :after-read="afterRead" :max-count="1" :delete="deleteFile"
-									 :deletable="!disabled" />
-								</div>
-							</div>
-						</div>
-					</van-cell>
-				</div>
-
 				<div style="width:70vw;margin: 15vw auto;">
-					<van-button round block type="info" native-type="submit" size="small">
+					<van-button round block type="info" native-type="submit" size="small" :disabled="disabled4">
 						提交审核
 					</van-button>
 				</div>
 			</van-form>
 		</div>
-		<van-popup v-model="showPicker6" position="bottom">
-			<van-picker show-toolbar :columns="gradeList" @cancel="showPicker6 = false" @confirm="gradeOnChange" />
+		<!-- 选择器 -->
+		<!-- 性别 -->
+		<van-popup v-model="showPicker1" position="bottom">
+			<van-picker show-toolbar :columns="sexList" @confirm="sexOnChange" @cancel="showPicker1 = false" />
 		</van-popup>
-		<van-popup v-model="showPicker7" position="bottom">
-			<van-picker show-toolbar :columns="classList" @cancel="showPicker7 = false" @confirm="classOnChange" />
+		<!-- 年级 -->
+		<van-popup v-model="showPicker2" position="bottom">
+			<van-picker show-toolbar :columns="gradeList" @cancel="showPicker2 = false" @confirm="gradeOnChange" />
 		</van-popup>
-
-
-		<!-- 性别选择器 -->
-		<van-popup v-model="showPicker4" position="bottom">
-			<van-picker show-toolbar :columns="sexList" @confirm="sexOnChange" @cancel="showPicker4 = false" />
+		<!-- 班级 -->
+		<van-popup v-model="showPicker3" position="bottom">
+			<van-picker show-toolbar :columns="classList" @cancel="showPicker3 = false" @confirm="classOnChange" />
 		</van-popup>
 	</div>
 </template>
@@ -129,107 +109,292 @@
 <script>
 	import * as API from "../../api.js"
 	import Exif from '../../../static/js/exif.js'
-	let departmentList = []; //完整的架构列表
-
+	var departmentList = []; //完整的架构列表
 
 	const REG_CODE = /^1[3-9]\d{9}$/;
 	const REG_ID = /^[1-9]\d{5}(18|19|20|(3\d))\d{2}((0[1-9])|(1[0-2]))(([0-2][1-9])|10|20|30|31)\d{3}[0-9Xx]$/;
 	export default {
 		data() {
 			return {
+				// 个人基本信息
 				userInfor: {
-					user_sex: 1 ? '男' : '女',
-					user_address: '',
-					user_card: '',
-					user_iphone: '',
-					class_id: '',
-					whether: false,
-					user_head1: '', //	教师头像
-					user_images1: '',
-					user_image: '',
+					user_openid: sessionStorage.getItem('openId'),
+					user_address: ''
+				},
+				sexList: ['男', '女'], //性别列表
+				showPicker1: false,
+				// 职工信息
+				worker: false, // 是否为职工开关
+				disabled1: false, // 是否禁用职工开关
+				workerInfor: {
 					user_openid: sessionStorage.getItem('openId'),
 					staff_status: 0,
-					teacher: 0
+					user_images1: ''
 				},
-				status: '',
-				switchteacher: false,
-				worker: false,
-				accountInfor: {
-					comId: 0
+
+				//教师信息
+				swi_teacher: false, // 是否为教师
+				charge: false, // 是否为班主任
+				disabled2: false, // 是否禁用教师开关
+				disabled3: false, // 是否禁用班主任开关
+				teacherInfor: {
+					teacher: '',
+					user_head1: '',
+					user_openid: sessionStorage.getItem('openId'),
+					whether: '',
+					class_id: ''
 				},
-				showPicker4: false,
-				showPicker6: false,
-				showPicker7: false,
-				fileList: [], //头像文件列表
-				sexList: ['男', '女'], //性别列表
-				gradeList: [],
-				classList: [], //	年级列表
-				disabled: false,
-				list: [],
+				showPicker2: false, // 年级
+				showPicker3: false, // 班级
+				gradeList: [], // 年级列表
+				classList: [], // 班级列表
+				disabled4: false, // 提交审核
+
+				register: '', // 用户未注册
+
+				// 人脸数据
+				fileList: [],
 				files: {
 					name: "",
 					type: ""
 				},
+				deletable: true,
 				headerImage: null //图片压缩后的地址（base64）
 			}
 		},
 		created() {
 			$('title').text('用户信息')
-			// this.userInfor = API.data.userInfor.user;
-			
+			// sessionStorage.setItem('openId', 'oaHn-0XiDsAX024l7mZKXJXnYczA')
+			sessionStorage.setItem('openId', 'oaHn-0Uz5B2GCTk2W4-1H3wXoItE')
+			// sessionStorage.setItem('openId', 'oaHn-0aPSKuP9qmkRBFyS9Fxi_w8')
 			
 		},
 		mounted() {
 			this.getGrade();
-			this.getUser();
-		},
-		watch: {
-			// worker: function (worker) {
-			// 	if(this.worker === false) {
-			// 		this.deleteFile()
-			// 	}
-			// 	if(this.switchteacher === false) {
-			// 		this.deleteFile()
-			// 	}
-			// }
+			this.getUserInfo();
 		},
 		methods: {
-			// 页面返回
-			onClickLeft() {
-				this.$router.go(-1)
+			// 已注册用户获取信息
+			getUserInfo() {
+				var that = this;
+				API.getUser({
+					user_openid: sessionStorage.getItem('openId')
+				}, function(callback) {
+					if (callback.msg == 'ok') {
+						console.log(callback.user)
+						that.userInfor = callback.user;
+						that.workerInfor = callback.user;
+						that.teacherInfor = callback.user;
+						that.disabled4 = true;
+						// 教师
+						if (callback.user.apply_teacher === 1) {
+							that.swi_teacher = true;
+							that.disabled1 = true;
+							that.disabled2 = true;
+							that.disabled3 = true;
+							that.disabled4 = true;
+							that.deletable = false;
+							if (that.teacherInfor.whether === 1) {
+								that.charge = true;
+							}
+							that.fileList[0] = {
+								url: that.userInfor.user_head1
+							}
+							that.$set(that.fileList)
+						}
+						// 职工
+						if (callback.user.apply_staff === 1) {
+							that.worker = true;
+							that.swi_teacher = false;
+							that.deletable = false;
+							that.disabled4 = true;
+							that.disabled2 = true;
+							that.disabled1 = true;
+							that.fileList[0] = {
+								url: that.userInfor.user_images1
+							}
+						}
+					} else {
+						that.register = callback.msg
+					}
+				})
 			},
+			// 提交
+			onSubmit() {
+				// 普通注册
+				
+				var that = this;
+				if (!REG_ID.test(that.userInfor.user_card)) {
+					this.$toast.fail('请填写有效的身份证号码');
+					return '';
+				}
+				if (!REG_CODE.test(that.userInfor.user_iphone)) {
+					this.$toast.fail('手机号码格式不正确');
+					return '';
+				} else {
+					// 普通用户注册
+
+					if (that.worker === false && that.swi_teacher === false) {
+						if (that.userInfor.user_name && that.userInfor.user_sex && that.userInfor.user_card &&
+							that.userInfor.user_iphone && that.userInfor.user_address) {
+							console.log(1)
+							that.postUser();
+						} else {
+							that.$toast.fail('请补充完整信息');
+						}
+					}
+					// 职工
+					if (that.worker === true && that.swi_teacher === false) {
+						
+						if (that.userInfor.user_name && that.userInfor.user_sex && that.userInfor.user_card &&
+							that.userInfor.user_iphone && that.userInfor.user_address && that.workerInfor.date1 && that.workerInfor.positions &&
+							that.workerInfor.user_images1) {
+							console.log(2)
+							
+							that.postUser();
+							
+							that.postWorker();
+						} else {
+							that.$toast.fail('请补充完整信息');
+						}
+					}
+					// 教师
+					if (that.worker === false && that.swi_teacher === true) {
+						
+						if (that.userInfor.user_name && that.userInfor.user_sex && that.userInfor.user_card &&
+							that.userInfor.user_iphone && that.userInfor.user_address && that.teacherInfor.class_grade && that.teacherInfor.class_name &&
+							that.teacherInfor.work_number && that.teacherInfor.subjects && that.teacherInfor.user_head1) {
+							console.log(3)
+							that.postUser();
+							that.postTeacher();
+						} else {
+							that.$toast.fail('请补充完整信息');
+						}
+					}
+
+				}
+			},
+
+			// 普通用户注册
+			postUser() {
+				var that = this;
+				API.postAddUser(JSON.stringify(that.userInfor), function(callback) {
+					if (callback.msg == 'ok') {
+						that.$toast.success("添加成功");
+						that.getUserInfo();
+						that.disabled4 = true;
+						setTimeout(function() {
+							that.$router.push('/personal');
+						}, 2000)
+					}
+				})
+			},
+
+			// 职工用户注册
+			postWorker() {
+				var that = this;
+				if (that.worker === true) {
+					that.workerInfor.staff_status = 0
+				} 
+				API.postAddUser(JSON.stringify(that.workerInfor), function(callback) {
+					if (callback.msg == 'ok') {
+						that.$toast.success("添加成功");
+						that.getUserInfo();
+						that.disabled1 = true;
+						that.disabled2 = true;
+						that.disabled3 = true;
+						that.disabled4 = true;
+						that.deletable = false;
+						setTimeout(function() {
+							that.$router.push('/personal');
+						}, 2000)
+					}
+				})
+			},
+
+			// 教师用户注册
+			postTeacher() {
+				var that = this;
+				if (that.swi_teacher === true) {
+					that.teacherInfor.teacher = 1
+				} else if (that.swi_teacher === false) {
+					that.teacherInfor.teacher = 0
+				}
+				if (that.charge === true) {
+					that.teacherInfor.whether = 1
+				} else if (that.charge === false) {
+					that.teacherInfor.whether = 0
+				}
+				API.postAddUser(JSON.stringify(that.teacherInfor), function(callback) {
+					if (callback.msg == 'ok') {
+						that.$toast.success("添加成功");
+						that.getUserInfo();
+						that.disabled1 = true;
+						that.disabled2 = true;
+						that.disabled3 = true;
+						that.disabled4 = true;
+						that.deletable = false;
+						setTimeout(function() {
+							that.$router.push('/personal');
+						}, 2000)
+					}
+				})
+			},
+
+			// 开关状态的改变
 			switch1() {
-				let that = this;
-				console.log('worker' + that.worker)
-				console.log('that.switchteacher' + that.switchteacher)
-				if (that.worker == false) {
-					that.switchteacher = false;
+				var self = this;
+				if (self.worker === true) {
+					self.swi_teacher = false;
+				}
+				if (self.worker === true) {
+					self.disabled4 = false
+				} else if (self.worker === false) {
+					self.disabled4 = true
 				}
 			},
 			switch2() {
-				let that = this;
-				console.log('that.switchteacher' + that.switchteacher)
-				if (that.switchteacher == false) {
-					that.worker = false;
-					that.userInfor.whether = false;
-				} 
+				var self = this;
+				if (self.swi_teacher === true) {
+					self.worker = false;
+				}
+				if (self.swi_teacher === true) {
+					self.disabled4 = false
+				} else if (self.swi_teacher === false) {
+					self.disabled4 = true
+				}
 			},
-			// 性别选中
+
+			// 性别选择
 			sexOnChange(picker, value, index) {
-				console.log(value)
 				this.userInfor.user_sex = value + 1
-				this.showPicker4 = false;
+				this.showPicker1 = false;
 			},
-			// 出生日期选中
-			brithDateOnChange(time) {
-				this.userInfor.brithDate = this.dateFormat(time);
-				this.showPicker5 = false;
+
+			// 获取年级班级
+			getGrade() {
+				var that = this;
+				API.getGrade({}, function(callback) {
+					if (callback.msg === 'ok') {
+						that.gradeList = callback.data;
+					}
+				})
+			},
+			getClass(get_class) {
+				var that = this;
+				API.getClass({
+					grade: get_class
+				}, function(callback) {
+					if (callback.msg === 'ok') {
+						that.classList = callback.data
+					}
+				})
 			},
 			// 年级选中
 			gradeOnChange(value) {
 				console.log(value)
 				this.userInfor.class_grade = value;
-				this.showPicker6 = false;
+				this.showPicker2 = false;
 				this.getClass(value)
 			},
 			// 班级选中
@@ -237,16 +402,25 @@
 				console.log(value)
 				this.userInfor.class_name = value.text;
 				this.userInfor.class_id = value.class_id;
-				this.showPicker7 = false;
+				this.showPicker3 = false;
 			},
+
+			// 人脸图片
 			// 删除图片
 			deleteFile(file, detail) {
-				this.userInfor.user_images1 = ""
-				this.userInfor.user_head1 = ""
-				this.userInfor = JSON.parse(JSON.stringify(this.userInfor))
-				this.fileList = []
-				this.$set(this.userInfor, this.fileList) //绑定值后不更新，重新渲染
+				var self = this;
+				if (self.worker === true) {
+					this.workerInfor.user_images1 = ""
+					this.fileList = []
+					this.$set(this.workerInfor, this.fileList) //绑定值后不更新，重新渲染
+				}
+				if (self.swi_teacher === true) {
+					this.teacherInfor.user_head1 = ""
+					this.fileList = []
+					this.$set(this.teacherInfor, this.fileList) //绑定值后不更新，重新渲染
+				}
 			},
+
 			// 文件选中上传
 			afterRead(file) {
 				file.status = 'uploading';
@@ -256,328 +430,61 @@
 				this.files.type = file.file.type; // 获取类型
 				this.imgPreview(file.file);
 			},
-			// 获取班级列表
-			getGrade() {
-				let that = this;
-				API.getGrade({}, function(callback) {
-					console.log(callback.data)
-					if (callback.msg === 'ok') {	
-						that.gradeList = callback.data;
-				} })
-			},
-			getClass(get_class) {
-				let that = this;
-				API.getClass({grade:get_class}, function(callback) {
-					if(callback.msg === 'ok') {
-						that.classList = callback.data
-						console.log(that.classList)
-					}
-				})
-			},
-			getUser() {
-				let that = this;
-				 
-				API.getUser({
-					user_openid: sessionStorage.getItem('openId')
-				}, function(callback) {
-					 
-					if (callback.msg == 'ok') {
-						 
-						sessionStorage.setItem("userInfor", JSON.stringify(callback));
-						API.data.userInfor = callback;
-						that.userInfor = API.data.userInfor.user;
-						that.status = that.userInfor.status
-						 ;
-						if (that.userInfor.teacher === 0 && that.userInfor.staff_status === 0) {
-							 
-							that.worker = true;
-							if(that.worker === true) {
-								 
-								console.log(that.userInfor.user_images1)
-								that.fileList[0] = {
-									url: that.userInfor.user_images1
-								}
-								that.$set(that.fileList)
-							} 
-						}
-						if (that.userInfor.teacher === 1) {
-							 
-							that.switchteacher = true;
-							that.worker = false;
-							if (that.userInfor.whether === 1) {
-								that.userInfor.whether = true;
-							}
-							if(that.switchteacher === true) {
-								that.fileList[0] = {
-									url: that.userInfor.user_head1
-								}
-								that.$set(that.fileList)
-							}
-						}
-						
-						
-						
-						
-						
-					}
-				})
-			},
-			// 注册
-			postUser() {
-				let that = this;
-				if(that.switchteacher === true) {
-					that.userInfor.teacher = 1
-				}
-				if(that.userInfor.whether === true) {
-					that.userInfor.whether = 1
-				}
-				API.postAddUser(JSON.stringify(that.userInfor), function(callback) {
-					if (callback.msg == 'ok') {
-						that.$toast.success("添加成功");
-						that.getUser();
-					}
-				})
-			},
-			postWorker() {
-				let that = this;
-				if(that.worker === true) {
-					that.userInfor.staff_status = 0
-				}
-				API.postAddUser(JSON.stringify(that.userInfor), function(callback) {
-					if (callback.msg == 'ok') {
-						that.$toast.success("添加成功");
-						that.worker = true;
-						that.getUser();
-					}
-				})
-			},
-			postTeacher() {
-				let that = this;
-				
-				API.postAddTeacher(JSON.stringify(that.userInfor), function(callback) {
-					if (callback.msg == 'ok') {
-						that.$toast.success("添加成功");
-						that.getUser();
-					}
-				})
-			},
 
-			// 修改
-			putUser() {
-				let that = this;
-				// that.userInfor.user_openid = sessionStorage.getItem('openId');
-				API.putUser(JSON.stringify(that.userInfor), function(callback) {
-					console.log(123456)
-					if (callback.msg == 'ok') {
-						that.$toast.success("修改成功");
-						console.log(123456)
-						that.getUser();
-					}
-				})
-			},
-			putWorker() {
-				let that = this;
-				API.putUser(JSON.stringify(that.userInfor), function(callback) {
-					if (callback.msg == 'ok') {
-						that.$toast.success("修改成功");
-						that.worker = true;
-						that.getUser();
-					}
-				})
-			},
-			putTeacher() {
-				let that = this;
-				API.putUser(JSON.stringify(that.userInfor), function(callback) {
-					if (callback.msg == 'ok') {
-						that.$toast.success("修改成功");
-						that.getUser();
-					}
-				})
-			},
-
-			// 提交
-			onSubmit() {
-				let that = this;
-				 ;
-				// 注册
-				if (!that.userInfor.creat_time) {
-					 
-					if (!REG_ID.test(that.userInfor.user_card)) {
-						this.$toast.fail('请填写有效的身份证号码');
-						return '';
-					}
-					if (!REG_CODE.test(that.userInfor.user_iphone)) {
-						this.$toast.fail('手机号码格式不正确');
-						return '';
-					} else {
-						if (that.userInfor.user_name && that.userInfor.user_sex && that.userInfor.user_card &&
-							that.userInfor.user_iphone && that.userInfor.user_address) {
-							console.log(1)
-							that.postUser();
-							
-						} else {
-							that.$toast.fail('111请补充完整信息');
-						}
-					}
-
-				}else{
-					if (that.userInfor) {
-							 
-						// 普通用户修改
-						if (!REG_ID.test(that.userInfor.user_card)) {
-							this.$toast.fail('请填写有效的身份证号码');
-							return '';
-						}
-						if (!REG_CODE.test(that.userInfor.user_iphone)) {
-							this.$toast.fail('手机号码格式不正确');
-							return '';
-						} else {
-							 
-							// 职工修改
-							if (!that.userInfor.staff_status && that.userInfor.teacher ===
-								0) {
-									 
-								if (that.userInfor.date1 && that.userInfor.positions) {
-									that.postWorker()
-									console.log(4)
-								}
-							}
-							// if (that.userInfor.teacher === 0 && !that.userInfor.staff_status) {
-							// 	if (that.userInfor.user_name && that.userInfor.user_sex && that.userInfor.user_card &&
-							// 		that.userInfor.user_iphone && that.userInfor.user_address) {
-							// 			 
-							// 			that.postUser()
-							// 	} else {
-							// 		that.$toast.fail('33请补充完整信息');
-							// 	}
-							// }
-							
-						
-												
-							// 教师修改
-							if (!that.worker && that.switchteacher && !that.userInfor.staff_status && that.userInfor.teacher ===
-								1) {
-								 
-								if (that.userInfor.whether === true) {
-									that.userInfor.whether = 1
-								} else {
-									that.userInfor.whether = 0
-								}
-								if (that.userInfor.class_grade && that.userInfor.class_name &&
-									that.userInfor.work_number &&
-									that.userInfor.subjects) {
-									console.log(5)
-									that.putUser();
-									that.putTeacher();
-								} else {
-									that.$toast.fail('33请补充完整信息');
-								}
-							}
-					
-						}
-						
-					
-						// 职工更改为教师
-						// if (that.worker && !that.switchteacher && !that.userInfor.staff_status && that.userInfor.teacher ===
-						// 	1) {
-						// 	 ;
-						// 	if (that.userInfor.date1 && that.userInfor.positions) {
-						// 		that.postWorker();
-						// 	} else {
-						// 		that.$toast.fail('33请补充完整信息');
-						// 	}
-						// }
-					}
-				}
-				// 	if (that.worker && !that.switchteacher && !that.userInfor.staff_status && that.userInfor.teacher === 0) {
-				// 	// 职工注册
-				// 	if (that.userInfor.date1 && that.userInfor.positions) {
-				// 		that.postWorker();
-				// 		console.log(2)
-				// 	}
-				// }
-
-				// if (!that.worker && that.switchteacher && that.userInfor.teacher === 0) {
-				// 	if (that.userInfor.class_grade && that.userInfor.class_name && that.userInfor
-				// 		.work_number &&
-				// 		that.userInfor.subjects) {
-				// 		that.postTeacher();
-				// 		console.log(3)
-				// 	} else {
-				// 		that.$toast.fail('33请补充完整信息');
-				// 	}
-				// }
-
-				// 修改
-				
-
-			},
-			// 格式化日期时间
-			dateFormat(dateText) {
-				let time = new Date(dateText);
-				let year = time.getFullYear();
-				let month = time.getMonth() + 1;
-				let date = time.getDate();
-				let hours = time.getHours();
-				let minutes = time.getMinutes();
-				let seconds = time.getSeconds();
-				// return (year + "-" + month + "-" + date + ' ' + hours + ":" + minutes + ":" + seconds); //例：2018-2-5 12：00：00
-				return (year + "-" + (month < 10 ? "0" + month : month) + "-" + (date < 10 ? "0" + date : date)); //例：2018-12-5 12：00：00
-			},
-			// 上传头像
+			// 上传人脸
 			postImg() {
 				//这里写接口
-				let that = this,
+				var self = this,
 					formData = new FormData();
-				let file = this.dataURLtoFile(this.headerImage);
+				var file = self.dataURLtoFile(self.headerImage);
 				// file.status = 'uploading';
 				// file.message = '上传中...';
 				formData.append("file", file);
 				formData.append("name", file.name);
 				console.log(formData);
-				if (that.worker === true) {
+				if (self.worker === true) {
 					API.fUploadFile(formData, function(callback) {
 						console.log(callback)
 						if (callback.sucesss) {
-							that.fileList[0].status = '';
-							that.fileList[0].message = '';
-							that.fileList[0].url = callback.sucesss;
-							that.fileList[0].content = callback.sucesss;
-							that.$set(that.fileList) //绑定值后不更新，重新渲染
-							console.log(that.fileList)
-								that.userInfor.user_images1 = callback.sucesss
+							self.fileList[0].status = '';
+							self.fileList[0].message = '';
+							self.fileList[0].url = callback.sucesss;
+							self.fileList[0].content = callback.sucesss;
+							self.$set(self.fileList) //绑定值后不更新，重新渲染
+							console.log(self.fileList)
+							self.workerInfor.user_images1 = callback.sucesss
 						} else {
-							that.fileList[0].status = 'failed';
-							that.fileList[0].message = '上传失败';
-							that.$set(that.fileList) //绑定值后不更新，重新渲染
-							that.$toast.fail(callback.error);
+							self.fileList[0].status = 'failed';
+							self.fileList[0].message = '上传失败';
+							self.$set(self.fileList) //绑定值后不更新，重新渲染
+							self.$toast.fail(callback.error);
 						}
 					})
-				} else if(that.switchteacher === true) {
+				} else if (self.swi_teacher === true) {
 					API.fUploadFile(formData, function(callback) {
 						console.log(callback)
 						if (callback.sucesss) {
-							that.fileList[0].status = '';
-							that.fileList[0].message = '';
-							that.fileList[0].url = callback.sucesss;
-							that.fileList[0].content = callback.sucesss;
-							that.$set(that.fileList) //绑定值后不更新，重新渲染
-							console.log(that.fileList)
-								that.userInfor.user_head1 = callback.sucesss
+							self.fileList[0].status = '';
+							self.fileList[0].message = '';
+							self.fileList[0].url = callback.sucesss;
+							self.fileList[0].content = callback.sucesss;
+							self.$set(self.fileList) //绑定值后不更新，重新渲染
+							console.log(self.fileList)
+							self.teacherInfor.user_head1 = callback.sucesss
 						} else {
-							that.fileList[0].status = 'failed';
-							that.fileList[0].message = '上传失败';
-							that.$set(that.fileList) //绑定值后不更新，重新渲染
-							that.$toast.fail(callback.error);
+							self.fileList[0].status = 'failed';
+							self.fileList[0].message = '上传失败';
+							self.$set(self.fileList) //绑定值后不更新，重新渲染
+							self.$toast.fail(callback.error);
 						}
 					})
 				}
-			
 			},
 
+			// 预览图片
 			imgPreview(file) {
-				let self = this;
-				let Orientation;
+				var self = this;
+				var Orientation;
 				//去获取拍照时的信息，解决拍出来的照片旋转问题
 				console.log(JSON.stringify(Exif))
 				Exif.getData(file, function() {
@@ -588,13 +495,13 @@
 
 				if (/^image/.test(file.type)) {
 					// 创建一个reader
-					let reader = new FileReader();
+					var reader = new FileReader();
 					// 将图片2将转成 base64 格式
 					reader.readAsDataURL(file);
 					// 读取成功后的回调
 					reader.onloadend = function() {
-						let result = this.result;
-						let img = new Image();
+						var result = this.result;
+						var img = new Image();
 						img.src = result;
 						//判断图片是否大于100K,是就直接上传，反之压缩图片
 						if (this.result.length <= (100 * 1024)) {
@@ -602,7 +509,7 @@
 							self.postImg();
 						} else {
 							img.onload = function() {
-								let data = self.compress(img, Orientation);
+								var data = self.compress(img, Orientation);
 								self.headerImage = data;
 								self.postImg();
 							}
@@ -629,9 +536,9 @@
 				const max_step = 3;
 				if (img == null) return;
 				//img的高度和宽度不能在img元素隐藏后获取，否则会出错
-				let height = img.height;
-				let width = img.width;
-				let step = 2;
+				var height = img.height;
+				var width = img.width;
+				var step = 2;
 				if (step == null) {
 					step = min_step;
 				}
@@ -644,8 +551,8 @@
 					step < min_step && (step = max_step);
 				}
 				//旋转角度以弧度值为参数
-				let degree = step * 90 * Math.PI / 180;
-				let ctx = canvas.getContext('2d');
+				var degree = step * 90 * Math.PI / 180;
+				var ctx = canvas.getContext('2d');
 				switch (step) {
 					case 0:
 						canvas.width = width;
@@ -673,16 +580,16 @@
 				}
 			},
 			compress(img, Orientation) {
-				let canvas = document.createElement("canvas");
-				let ctx = canvas.getContext('2d');
+				var canvas = document.createElement("canvas");
+				var ctx = canvas.getContext('2d');
 				//瓦片canvas
-				let tCanvas = document.createElement("canvas");
-				let tctx = tCanvas.getContext("2d");
-				let initSize = img.src.length;
-				let width = img.width;
-				let height = img.height;
+				var tCanvas = document.createElement("canvas");
+				var tctx = tCanvas.getContext("2d");
+				var initSize = img.src.length;
+				var width = img.width;
+				var height = img.height;
 				//如果图片大于四百万像素，计算压缩比并将大小压至400万以下
-				let ratio;
+				var ratio;
 				if ((ratio = width * height / 4000000) > 1) {
 					console.log("大于400万像素")
 					ratio = Math.sqrt(ratio);
@@ -697,17 +604,17 @@
 				ctx.fillStyle = "#fff";
 				ctx.fillRect(0, 0, canvas.width, canvas.height);
 				//如果图片像素大于100万则使用瓦片绘制
-				let count;
+				var count;
 				if ((count = width * height / 1000000) > 1) {
 					console.log("超过100W像素");
 					count = ~~(Math.sqrt(count) + 1); //计算要分成多少块瓦片
 					//   计算每块瓦片的宽和高
-					let nw = ~~(width / count);
-					let nh = ~~(height / count);
+					var nw = ~~(width / count);
+					var nh = ~~(height / count);
 					tCanvas.width = nw;
 					tCanvas.height = nh;
-					for (let i = 0; i < count; i++) {
-						for (let j = 0; j < count; j++) {
+					for (var i = 0; i < count; i++) {
+						for (var j = 0; j < count; j++) {
 							tctx.drawImage(img, i * nw * ratio, j * nh * ratio, nw * ratio, nh * ratio, 0, 0, nw, nh);
 							ctx.drawImage(tCanvas, i * nw, j * nh, nw, nh);
 						}
@@ -731,19 +638,17 @@
 					}
 				}
 				//进行最小压缩
-				let ndata = canvas.toDataURL('image/jpeg', 0.1);
+				var ndata = canvas.toDataURL('image/jpeg', 0.1);
 				console.log('压缩前：' + initSize);
 				console.log('压缩后：' + ndata.length);
 				console.log('压缩率：' + ~~(100 * (initSize - ndata.length) / initSize) + "%");
 				tCanvas.width = tCanvas.height = canvas.width = canvas.height = 0;
 				return ndata;
-			},
+			}
 		}
 	}
 </script>
 
-<style scoped>
-	.content {
-		/*margin:46px 0 0 0;*/
-	}
+<style>
+
 </style>

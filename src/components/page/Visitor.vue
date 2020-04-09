@@ -44,6 +44,8 @@
 	import 'vant/lib/index.css';
 	import * as API from "../../api.js"
 	import Exif from '../../../static/js/exif.js'
+	
+	const REG_CODE = /^1[3-9]\d{9}$/;
 	export default {
 		data() {
 			return {
@@ -83,11 +85,7 @@
 			// 提交
 			onSubmit() {
 				let that = this;
-				if (!REG_ID.test(that.userInfor.user_id)) {
-					this.$toast.fail('请填写有效的身份证号码');
-					return '';
-				}
-				if (!REG_CODE.test(that.userInfor.user_iphone)) {
+				if (!REG_CODE.test(that.form.user_iphone)) {
 					this.$toast.fail('手机号码格式不正确');
 					return '';
 				} else {

@@ -50,15 +50,12 @@
                         <div class="van-field__body">
                             <div class="van-field__control van-field__control--right">
                                 <!-- <van-image v-if="form.visitor_head1" fit="cover" width="100" height="100" lazy-load :src="form.visitor_head1"/> -->
-                                <van-uploader v-model="fileList2" preview-size="150px" :after-read="afterRead2"
+                                <van-uploader v-model="fileList2" preview-size="120px" :after-read="afterRead2"
                                     :max-count="1" :delete="deleteFile2" :deletable="!disabled" />
                             </div>
                         </div>
                     </div>
                 </van-cell>
-
-
-
                 <div style="width:70vw;margin: 15vw auto;">
                     <van-button round block type="info" native-type="submit" size="small" :disabled="accountInfor.ifStatus == 0">
                         提交
@@ -182,6 +179,9 @@
                             console.log('修改用户信息成功')
                             that.$toast.success("修改成功");
                             that.GetUserInfo(); //重新获取用户信息
+							setTimeout(function(){
+								that.$router.push('/childrenList');
+							}, 2000)
                         } else {
                             console.log(66666)
                             that.$toast.fail(callback.msg);
@@ -497,8 +497,8 @@
         /*margin:46px 0 0 0;*/
     }
 
-    .avatar {
+ /*   .avatar {
         max-width: 100%;
         height: 20vw;
-    }
+    } */
 </style>

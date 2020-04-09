@@ -1,21 +1,27 @@
 <template>
 	<div>
-		<div class="audit">
-			<div v-for="(item,index) in parentList" :key="index" class="info">
-				<div class="infolist" @click='toFamily'>
-					<img class="auditicon" src="../../assets/icon/parent.png" alt=""><span>{{item.user_name}}</span>
-				</div>
-				<div class="infolist" @click='toChild'>
-					<img class="auditicon" src="../../assets/icon/children2.png" alt=""><span>{{item.stu_name}}</span>
-				</div>
-				<div class="infolist">
-					<div v-if="item.stu_status === 0" @click="toAudit(item.stu_number)"  class="auditbtn">
-						去审核
+		<div v-if="parentList.length > 0">
+			<div class="audit">
+				<div v-for="(item,index) in parentList" :key="index" class="info">
+					<div class="infolist" @click='toFamily'>
+						<img class="auditicon" src="../../assets/icon/parent.png" alt=""><span>{{item.user_name}}</span>
 					</div>
-					<div v-else class="auditbtn">已审核</div>
+					<div class="infolist" @click='toChildren_Details(item.stu_number)'>
+						<img class="auditicon" src="../../assets/icon/children2.png" alt=""><span>{{item.stu_name}}</span>
+					</div>
+					
+					<div class="infolist">
+						<div v-if="item.stu_status === 0" @click="toAudit(item.stu_number)"  class="auditbtn">
+							去审核
+						</div>
+						<div v-else class="auditbtn">已审核</div>
+					</div>
+			
 				</div>
-
 			</div>
+		</div>
+		<div v-else class="not_info">
+			暂无审核信息
 		</div>
 	</div>
 
@@ -37,6 +43,7 @@
 			this.getAuditStudent();
 		},
 		methods: {
+			
 			getAuditStudent() {
 				let that = this;
 				API.getAuditStudent({
@@ -54,8 +61,9 @@
 			toFamily() {
 				this.$router.push('/familyMemberInfo');
 			},
-			toChild() {
-				this.$router.push('/mychild');
+			toChildren_Details(stu_number) {
+			    console.log(stu_number)
+			    this.$router.push("/childrenInfo?stu_number=" + stu_number);
 			},
 			toAudit(stu_number) {
 				var that = this;
@@ -122,5 +130,12 @@
 		background-color: #1989fa;
 		color: #fff;
 		font-size: 4vw;
+	}
+	
+	.not_info {
+		display: flex;
+		justify-content: center;
+		margin-top: 20vw;
+		font-size: 5vw;
 	}
 </style>

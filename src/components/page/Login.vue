@@ -64,7 +64,7 @@
 					if (callback.msg === 'ok') { //已注册
 						sessionStorage.setItem("userInfor", JSON.stringify(callback.user));
 						API.data.userInfor = callback.user
-						that.$router.push("/userInfo");
+						that.$router.push("/personal");
 					} else { //未注册
 						console.log('2222,用户信息')
 						that.$router.push("/userInfo"); //前往注册
