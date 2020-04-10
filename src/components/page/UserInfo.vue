@@ -194,7 +194,7 @@
 							that.disabled3 = true;
 							that.disabled4 = true;
 							that.deletable = false;
-							if (that.teacherInfor.whether === 1) {
+							if (callback.user.whether === 1) {
 								that.charge = true;
 							}
 							that.fileList[0] = {

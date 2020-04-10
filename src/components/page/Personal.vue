@@ -12,7 +12,7 @@
             <div>
                 <van-cell title="个人信息" icon="contact" to="userInfo" is-link />
                 <van-cell title="我的孩子" icon="records" to="childrenList" is-link />
-				<div v-if="userInfor.apply_whether === 1">
+				<div v-if="userInfor.whether === 1">
 				    <van-cell title="班级管理" icon="friends-o" to="studentAudit" is-link />
 				</div>
                 <!-- <van-cell title="邀请访客" icon="sign" @click="invite" is-link /> -->
