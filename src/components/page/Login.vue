@@ -12,6 +12,8 @@
 			return {
 				code: "",
 				state: "",
+				school: '',
+				user_id: ''
 			}
 		},
 		created() {
@@ -19,6 +21,14 @@
 			console.log(window.location)
 			this.code = API.getUrlParam("code"); //获取url参数
 			this.state = API.getUrlParam("state"); //获取url参数
+			this.school = API.getUrlParam("school");
+			this.user_id = API.getUrlParam("user_id");
+			if(this.school !== null) {
+				sessionStorage.setItem('school', this.school);
+			}
+			if(this.user_id !== null) {
+				sessionStorage.setItem('user_id', this.user_id);
+			}
 			console.log('code=' + this.code)
 			console.log('state=' + this.state)
 
@@ -41,12 +51,22 @@
 					console.log('获取OpenId')
 					console.log(callback.data)
 					if (callback.msg == 'ok') {
+						debugger
 						sessionStorage.setItem('openId', callback.data);
-						if(that.state.indexOf("visitor") == 0){//跳转访客申请页面
-						    that.$router.push("/" + that.state);
-						}else{//跳转其他页面(要注册用户信息)
-						    that.GetUserInfo();
+						// that.$router.push("/" + that.state);
+						if(that.state === "empty"){
+							that.$router.push("/empty" + '?' + 'school' + "=" + sessionStorage.getItem('school') + '&' + 'user_id' + "=" + sessionStorage.getItem('user_id') + '&' + 'open_id' + "=" + sessionStorage.getItem('openId'));
+						}else{
+							that.$router.push("/" + that.state);
 						}
+										// 	if(that.state.indexOf("visitor") == 0){//跳转访客申请页面
+					// 	    that.$router.push("/" + that.state);
+					// 	}
+					// 	else{//跳转其他页面(要注册用户信息)
+					
+						
+					// 	    that.GetUserInfo();
+					// 	}
 					} else {
 						that.$toast.fail("请关注公众号");
 					}

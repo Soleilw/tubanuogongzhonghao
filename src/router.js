@@ -65,6 +65,11 @@ export default new Router({
 		    component: resolve => require(['./components/page/FamilyMemberInfo.vue'], resolve),
 		    meta: { title: '家庭成员信息' }
 		},
+		{
+		    path: '/empty',
+		    component: resolve => require(['./components/page/Empty.vue'], resolve),
+		    meta: { title: '授权' }
+		},
 		// {
 		//     path: '/mychild',
 		//     component: resolve => require(['./components/page/Mychild.vue'], resolve),

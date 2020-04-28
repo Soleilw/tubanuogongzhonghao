@@ -121,3 +121,6 @@ export const getAudit = function(data,callback){$.ajax({ type:'get', url:realmA_
 
 // 家庭成员信息
 export const getFamilyMember = function(data,callback){$.ajax({ type:'get', url:realmA_B+"/user/exStudent", data:data, success:function(res){callback(res)}})}
+
+// 授权
+export const auth = function(data,callback){$.ajax({ type:'post', url:realmA_B+"/school/notify", data:data, headers:headersD, success:function(res){callback(res)}})}

@@ -110,6 +110,9 @@
 	import * as API from "../../api.js"
 	import Exif from '../../../static/js/exif.js'
 	var departmentList = []; //完整的架构列表
+	
+	// import index from '../../api/index.js'
+	// import { getUser } from '../../api/user.js'
 
 	const REG_CODE = /^1[3-9]\d{9}$/;
 	const REG_ID = /^[1-9]\d{5}(18|19|20|(3\d))\d{2}((0[1-9])|(1[0-2]))(([0-2][1-9])|10|20|30|31)\d{3}[0-9Xx]$/;
@@ -175,6 +178,16 @@
 		},
 		methods: {
 			// 已注册用户获取信息
+			// getUserInfo() {
+			// 	var that = this;
+			// 	debugger
+			// 	getUser('oaHn').then( response => {
+			// 		debugger
+			// 		that.userInfor = response.data.user;
+			// 	}).catch(error => {
+			// 		reject(error)
+			// 	})
+			// },
 			getUserInfo() {
 				var that = this;
 				API.getUser({
