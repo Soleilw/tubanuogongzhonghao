@@ -51,14 +51,19 @@
 					console.log('获取OpenId')
 					console.log(callback.data)
 					if (callback.msg == 'ok') {
-						debugger
 						sessionStorage.setItem('openId', callback.data);
 						// that.$router.push("/" + that.state);
-						if(that.state === "empty"){
+						if(that.state === "empty-1"){
+							that.$router.push("/empty-1" + '?' + 'school' + "=" + sessionStorage.getItem('school') + '&' + 'user_id' + "=" + sessionStorage.getItem('user_id') + '&' + 'open_id' + "=" + sessionStorage.getItem('openId'));
+						}else if(that.state === "empty"){
 							that.$router.push("/empty" + '?' + 'school' + "=" + sessionStorage.getItem('school') + '&' + 'user_id' + "=" + sessionStorage.getItem('user_id') + '&' + 'open_id' + "=" + sessionStorage.getItem('openId'));
-						}else{
+						}else {
 							that.$router.push("/" + that.state);
 						}
+						
+						
+						
+						
 										// 	if(that.state.indexOf("visitor") == 0){//跳转访客申请页面
 					// 	    that.$router.push("/" + that.state);
 					// 	}

@@ -6,6 +6,8 @@ export const realmA_B = "https://gong.fengniaotuangou.cn/api";//后台线上接�
 
 export const realmB = "https://xiao.fengniaotuangou.cn";//公众号页面地址
 
+export const baseUrl = "https://api.fengniaotuangou.cn";
+
 export const appId = "wxa45e3bb7239c5059";//公众号ID
 
 export var headersA = { Token : sessionStorage.getItem('token')};//设置请求头
@@ -124,3 +126,5 @@ export const getFamilyMember = function(data,callback){$.ajax({ type:'get', url:
 
 // 授权
 export const auth = function(data,callback){$.ajax({ type:'post', url:realmA_B+"/school/notify", data:data, headers:headersD, success:function(res){callback(res)}})}
+
+export const auth_1 = function(data,callback){$.ajax({ type:'post', url:baseUrl+"/api/user", data:data, headers:headersD, success:function(res){callback(res)}})}

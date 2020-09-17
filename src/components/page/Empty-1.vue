@@ -27,16 +27,12 @@
 		},
 		methods: {
 			authorization() {
-				console.log('进来了授权页面')
 				var that = this;
-				API.auth({
-					open_id: sessionStorage.getItem('openId'),
-					school:  this.school,
-					user_id: this.user_id
+				API.auth_1({
+					open_id: sessionStorage.getItem('openId')
 				}, function(callback) {
-					console.log('调用了授权页面')
+					debugger
 					if (callback.msg == 'ok') {
-						console.log('授权成功了')
 						that.$toast.success("授权成功");
 						// wx.miniProgram.navigateTo({
 						// 	url: '/pages/index/index'

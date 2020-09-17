@@ -9,6 +9,7 @@
     "build": "node build/build.js",
     "build:dll": "webpack --config build/webpack.dll.conf.js"
   },
+	"proxy": "http://192.168.0.108",
   "dependencies": {
     "axios": "^0.15.3",
     "babel-polyfill": "^6.23.0",

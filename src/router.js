@@ -70,6 +70,11 @@ export default new Router({
 		    component: resolve => require(['./components/page/Empty.vue'], resolve),
 		    meta: { title: '授权' }
 		},
+		{
+		    path: '/empty-1',
+		    component: resolve => require(['./components/page/Empty-1.vue'], resolve),
+		    meta: { title: '授权' }
+		},
 		// {
 		//     path: '/mychild',
 		//     component: resolve => require(['./components/page/Mychild.vue'], resolve),
@@ -86,6 +91,23 @@ export default new Router({
         {
             path: '*',
             redirect: '/404'
-        }
-    ]
+        },
+		{
+		    path: '/matrix',
+		    component: resolve => require(['./components/page/matrix.vue'], resolve),
+		    meta: { title: '矩阵' }
+		},
+		{
+		    path: '/rect',
+		    component: resolve => require(['./components/page/rect.vue'], resolve),
+		    meta: { title: '矩阵' }
+		},
+		{
+		    path: '/interTest',
+		    component: resolve => require(['./components/page/interTest.vue'], resolve),
+		    meta: { title: '接口测试' }
+		}
+    ],
+	
+	
 })
