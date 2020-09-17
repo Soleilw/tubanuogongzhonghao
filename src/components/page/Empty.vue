@@ -20,6 +20,7 @@
 		},
 		created() {
 			$('title').text('授权')
+			console.log('进来了授权页面')
 			// 获取参数
 			this.school = API.getUrlParam("school");
 			this.user_id = API.getUrlParam("user_id");
