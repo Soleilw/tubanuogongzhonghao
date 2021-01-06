@@ -11,7 +11,7 @@
   },
 	"proxy": "http://192.168.0.108",
   "dependencies": {
-    "axios": "^0.15.3",
+    "axios": "^0.21.1",
     "babel-polyfill": "^6.23.0",
     "mavon-editor": "^2.5.4",
     "vant": "^2.5.5",
